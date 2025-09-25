@@ -2,9 +2,9 @@
     require_once("db.php");
     if (isset($_GET["id"])) {
         try {
+            $conn = new DB();
             $id = $_GET["id"];
-            $sql = $conn->prepare("DELETE FROM users WHERE id = :id");
-            $sql->execute([":id" => $id]);
+            $sql = $conn->delete("users","id = $id");
             header("Location: list.php");
             exit;
         } catch (PDOException $e) {

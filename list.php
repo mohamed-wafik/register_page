@@ -1,9 +1,8 @@
 <?php
   require_once "db.php";
   try {
-    $sql = $conn->prepare("SELECT * FROM users");
-    $sql->execute();
-    $users = $sql->fetchAll(PDO::FETCH_ASSOC);
+    $conn = new DB();
+    $users = $conn->selectAll("users") ;
   } catch(PDOException $e) {
     $error = "<div class='message error'><span>!</span><p>{$e->getMessage()}</p></div>";
   }

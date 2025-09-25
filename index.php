@@ -17,22 +17,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($errors)) {
         $skills_str = implode("|" , $skills);
         try {
-            $sql = $conn->prepare("INSERT INTO users 
-                (first_name, last_name, address, country, gender, skills, username, password, department) 
-                VALUES (:first_name, :last_name, :address, :country, :gender, :skills, :username, :password, :department)");
-
-            $sql->execute([
-                ':first_name' => $first_name,
-                ':last_name' => $last_name,
-                ':address' => $address,
-                ':country' => $country,
-                ':gender' => $gender,
-                ':skills' => $skills_str,
-                ':username' => $username,
-                ':password' => $password,
-                ':department' => $department
+            $conn = new DB();
+            $conn->create("users" , [
+                'first_name' => $first_name,
+                'last_name' => $last_name,
+                'address' => $address,
+                'country' => $country,
+                'gender' => $gender,
+                'skills' => $skills_str,
+                'username' => $username,
+                'password' => $password,
+                'department' => $department
             ]);
-
             header("location: list.php");
             exit;
 

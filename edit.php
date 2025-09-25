@@ -1,12 +1,10 @@
 <?php
 require_once("db.php");
 require_once("util.php");
+$conn = new DB();
 if (isset($_GET["id"])) {
     $id = $_GET["id"];
-    $sql = $conn->prepare("SELECT * FROM users WHERE id = :id");
-    $sql->execute([":id" => $id]);
-
-    $user = $sql->fetch(PDO::FETCH_ASSOC);
+    $user  =  $conn->select("users","id = $id");
     $first_name = $user["first_name"];
     $last_name  = $user["last_name"];
     $address    = $user["address"];
@@ -29,34 +27,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $skills = $_POST['skills'] ?? [];
     $errors = validation($first_name,$last_name,$address,$country,$gender,$username, $password,$department,$skills);
     if (empty($errors)) {
-        $skills_str = implode("|", $skills);
         try {
-            $sql = $conn->prepare("UPDATE users SET 
-                                    first_name = :first_name,
-                                    last_name = :last_name,
-                                    address = :address,
-                                    country = :country,
-                                    gender = :gender,
-                                    skills = :skills,
-                                    username = :username,
-                                    password = :password,
-                                    department = :department
-                                WHERE id = :id
-            ");
-
-            $sql->execute([
-                ':first_name' => $first_name,
-                ':last_name' => $last_name,
-                ':address' => $address,
-                ':country' => $country,
-                ':gender' => $gender,
-                ':skills' => $skills_str,
-                ':username' => $username,
-                ':password' => $password,
-                ':department' => $department,
-                ":id" => $id
+            $skills_str = implode("|", $skills);
+            $conn->update("users", "id = $id", [
+                    'first_name' => $first_name,
+                    'last_name' => $last_name,
+                    'address' => $address,
+                    'country' => $country,
+                    'gender' => $gender,
+                    'skills' => $skills_str,
+                    'username' => $username,
+                    'password' => $password,
+                    'department' => $department,
+                    "id" => $id
             ]);
-
             header("location: list.php");
             exit;
 
